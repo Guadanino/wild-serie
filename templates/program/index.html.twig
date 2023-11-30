@@ -1,10 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Wild Series{% endblock %}
+{% block title %}All Programs
+{% endblock %}
 
 {% block body %}
-<h1>Programme</h1>
-    <div>
-    <a href=" {{ path('program_show', { id: 1}) }} ">LIEN</a>
-    </div>
+	<h1>Toutes les séries</h1>
+	{% for program in programs %}
+		<div>
+			<h2>{{ loop.index }}
+				/
+				{{ program.title}}
+				- Catégorie :
+				{{ program.category.name}}</h2>
+			<p>
+				{{ program.synopsis }}
+			</p>
+            <a href="{{ path("program_show", {id: program.id}) }}">Voir la fiche</a>
+		</div>
+	{% else %}
+		Aucune série trouvée.
+	{% endfor %}
+	<div>
+		<a href=" {{ path('app_index') }} ">Retour à l'accueil</a>
+	</div>
 {% endblock %}
