@@ -23,7 +23,6 @@ class SeasonFixtures extends Fixture implements DependentFixtureInterface
             $season->setNumber($seasonData['Number']);
             $season->setYear($seasonData['Year']);
             $season->setDescription($seasonData['Description']);
-            $season->setDescription($seasonData['Description']);
             $season->setProgram($this->getReference($seasonData['Program']));
             $manager->persist($season);
 
@@ -35,7 +34,7 @@ class SeasonFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
-            CategoryFixtures::class,
+            ProgramFixtures::class,
         ];
     }
 }
