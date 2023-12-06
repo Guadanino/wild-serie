@@ -13,7 +13,7 @@
 			
 			{% for season in seasons %}
 			<p>{{ season.number }}</p>
-			<a href="{{ path("program_season_show", {programId: program.id , seasonId: season.id}) }}">Consulter saison</a>
+			<a href="{{ path("program_season_show", {program: program.id , season: season.id}) }}">Consulter saison</a>
 
 			{% else %}
 				Aucune saison trouvée.

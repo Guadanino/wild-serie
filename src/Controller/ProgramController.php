@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Episode;
+use App\Entity\Program;
+use App\Entity\Season;
 use App\Repository\EpisodeRepository;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
@@ -25,16 +28,15 @@ class ProgramController extends AbstractController
 
     #[Route('/show/{id}', requirements: ['id' => '\d+'], methods: ['GET'], name: 'show')]
 
-    public function show(int $id, ProgramRepository $programRepository): Response
+    public function show(Program $program): Response
     {
-        $program = $programRepository->findOneBy(['id' => $id]);
 
         $seasons = $program->getSeasons();
 
 
         if (!$program) {
             throw $this->createNotFoundException(
-                'Aucune série avec le numero : ' . $id . ' trouvé dans la table'
+                'Aucune série avec le numero : ' . $program['id'] . ' trouvé dans la table'
             );
         }
         return $this->render('program/show.html.twig', [
@@ -43,43 +45,37 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('/{programId}/season/{seasonId}', requirements: ['id' => '\d+'], methods: ['GET'], name: 'season_show')]
+    #[Route('/{program}/season/{season}', requirements: ['id' => '\d+'], methods: ['GET'], name: 'season_show')]
 
-    public function showSeason(int $programId, int $seasonId, ProgramRepository $programRepository, SeasonRepository $seasonRepository, EpisodeRepository $episodeRepository): Response
+    public function showSeason(Program $program, Season $season): Response
     {
-        $program = $programRepository->findOneBy(['id' => $programId]);
-        $seasons = $seasonRepository->findOneBy(['id' => $seasonId]);
-        $episode = $episodeRepository->findAll();
+        $episodes = $season->getEpisodes();
 
-        if (!$seasons) {
+        if (!$season) {
             throw $this->createNotFoundException(
                 'Aucune saison trouvé dans la table'
             );
         }
         return $this->render('program/season_show.html.twig', [
             'program' => $program,
-            'seasons' => $seasons,
-            'episode' => $episode,
+            'season' => $season,
+            'episodes' => $episodes
 
         ]);
     }
 
-    #[Route('/{programId}/season/{seasonId}/episode/{episodeId}', requirements: ['id' => '\d+'], methods: ['GET'], name: 'episode_show')]
+    #[Route('/{program}/season/{season}/episode/{episode}', requirements: ['id' => '\d+'], methods: ['GET'], name: 'episode_show')]
 
-    public function showEpisode(int $programId, int $seasonId, ProgramRepository $programRepository, SeasonRepository $seasonRepository, EpisodeRepository $episodeRepository): Response
+    public function showEpisode(Program $program, Season $season, Episode $episode): Response
     {
-        $program = $programRepository->findOneBy(['id' => $programId]);
-        $seasons = $seasonRepository->findOneBy(['id' => $seasonId]);
-        $episode = $episodeRepository->findAll();
-
-        if (!$seasons) {
+        if (!$season) {
             throw $this->createNotFoundException(
                 'Aucune saison trouvé dans la table'
             );
         }
-        return $this->render('program/season_show.html.twig', [
+        return $this->render('program/episode_show.html.twig', [
             'program' => $program,
-            'seasons' => $seasons,
+            'season' => $season,
             'episode' => $episode,
         ]);
     }
