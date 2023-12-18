@@ -5,22 +5,24 @@
 {% endblock %}
 
 {% block body %}
-	<div class="media">
-		<div class="media-body">
-			<h1 class="mt-0">{{ program.title }}</h1>
-			
-			<p>{{ season.number }}</p>
-
-				{% for episode in episodes %}
-					<p> {{episode.number}} </p>
-					<p> {{episode.title}} </p>
-					<a href="{{ path("program_episode_show", {program: program.id , season: season.id , episode: episode.id}) }}">Consulter l'épisode</a>	
-				{% endfor %}
-			
-			<a href="{{ path("program_show", {id: program.id}) }}">Retour programme</a>
+	<div class="card text-bg-light mb-3" style="max-width: 18rem;">
+		<div class="card-header"></div>
+		<div class="card-body">
+			<h2 class="card-title, mt-0">{{ program.title }}</h2>
+			<p class="card-text">{{ season.number }}</p>
+			{% for episode in episodes %}
+				<p class="card-text">
+					{{episode.number}}
+				</p>
+				<p class="card-text">
+					{{episode.title}}
+				</p>
+				<a href="{{ path("program_episode_show", {program: program.id , season: season.id , episode: episode.id}) }}">Consulter l'épisode</a>
+			{% endfor %}
+			<p class="card-text">Catégorie :{{program.category.name}}</p>
 		</div>
+		<a href="{{ path("program_show", {id: program.id}) }}">Retour programme</a>
 	</div>
-
 	<a href="{{ path('program_index') }}">
 		Retour à la liste des séries
 	</a>

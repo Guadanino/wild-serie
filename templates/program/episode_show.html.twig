@@ -4,15 +4,15 @@
 {% endblock %}
 
 {% block body %}
-	<div class="media">
-		<div class="media-body">
-			<h1 class="mt-0">Episode {{episode.number}} - {{ episode.title }}</h1>
-			<p>Synopsis : {{episode.synopsis}}</p>
-			<p>Catégorie :{{program.category.name}}</p>
-			<a href="{{ path("program_show", {id: program.id}) }}">Back</a>
-		</div>
+<div class="card text-bg-light mb-3" style="max-width: 18rem;">
+	<div class="card-header"></div>
+	<div class="card-body">
+		<h2 class="card-title, mt-0">Episode {{episode.number}} - {{ episode.title }}</h2>
+		<p class="card-text">Synopsis : {{episode.synopsis}}</p>
+		<p class="card-text">Catégorie :{{program.category.name}}</p>
 	</div>
-
+	<a href="{{ path("program_show", {id: program.id}) }}">Retour</a>
+</div>
 	<a href="{{ path('program_index') }}">
 		Retour à la liste des séries
 	</a>

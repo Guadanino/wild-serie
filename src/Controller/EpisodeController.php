@@ -33,6 +33,8 @@ class EpisodeController extends AbstractController
             $entityManager->persist($episode);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Un épisode a été ajouté avec succès');
+
             return $this->redirectToRoute('app_episode_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -59,6 +61,8 @@ class EpisodeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('success', 'La modification d\'un épisode a été effectué avec succès');
+
             return $this->redirectToRoute('app_episode_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -74,6 +78,8 @@ class EpisodeController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$episode->getId(), $request->request->get('_token'))) {
             $entityManager->remove($episode);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Un épisode a été effacé avec succès');
         }
 
         return $this->redirectToRoute('app_episode_index', [], Response::HTTP_SEE_OTHER);
