@@ -18,7 +18,7 @@ class ActorFixtures extends Fixture implements DependentFixtureInterface
             $actor = new Actor();
             $actor->setName($faker->name());
             for ($j = 0; $j < 3; $j++) {
-                $actor->addProgram($this->getReference('program_' . $i));
+                $actor->addProgram($this->getReference('program_' . $j));
             }
 
             $manager->persist($actor);

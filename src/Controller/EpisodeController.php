@@ -6,10 +6,13 @@ use App\Entity\Episode;
 use App\Form\EpisodeType;
 use App\Repository\EpisodeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/episode')]
 class EpisodeController extends AbstractController
@@ -23,17 +26,26 @@ class EpisodeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_episode_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, MailerInterface $mailer, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $episode = new Episode();
         $form = $this->createForm(EpisodeType::class, $episode);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $slug = $slugger->slug($episode->getTitle());
+            $episode->setSlug($slug);
             $entityManager->persist($episode);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Un épisode a été ajouté avec succès');
+            $email = (new Email())
+            ->from($this->getParameter('mailer_from'))
+            ->to('your_email@example.com')
+            ->subject('Un nouvel episode vient d\'être publié !')
+            ->html($this->renderView('Program/newEpisodeEmail.html.twig', ['episode' => $episode]));
+             $mailer->send($email);
+
+            $this->addFlash('success', 'The new program has been created');
 
             return $this->redirectToRoute('app_episode_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -53,15 +65,15 @@ class EpisodeController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_episode_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Episode $episode, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Episode $episode, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(EpisodeType::class, $episode);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $slug = $slugger->slug($episode->getTitle());
+            $episode->setSlug($slug);
             $entityManager->flush();
-
-            $this->addFlash('success', 'La modification d\'un épisode a été effectué avec succès');
 
             return $this->redirectToRoute('app_episode_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -78,9 +90,9 @@ class EpisodeController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$episode->getId(), $request->request->get('_token'))) {
             $entityManager->remove($episode);
             $entityManager->flush();
-
-            $this->addFlash('success', 'Un épisode a été effacé avec succès');
         }
+
+        $this->addFlash('warning', 'L\'épisode à été supprimer');
 
         return $this->redirectToRoute('app_episode_index', [], Response::HTTP_SEE_OTHER);
     }

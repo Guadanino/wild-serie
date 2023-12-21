@@ -1,29 +1,34 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Série #
-	{{ program.id }}
-{% endblock %}
+{% block title %}Série #{{ program.id }}{% endblock %}
 
 {% block body %}
-	<div class="media">
-		<div class="media-body">
-			<h1 class="mt-0">{{ program.title }}</h1>
-			<p>Synopsis : {{program.synopsis}}</p>
-			<p>Catégorie :{{program.category.name}}</p>
-			
-			{% for season in seasons %}
-			<p>{{ season.number }}</p>
-			<a href="{{ path("program_season_show", {program: program.id , season: season.id}) }}">Consulter saison</a>
+    <div class="media">
+        <img class="align-self-start mr-3" src="{{program.poster}}" alt="{{ program.title }} poster">
+        <img src="{{ vich_uploader_asset(program) }}" alt="{{ program.title }}">
+        <div class="media-body">
+            <h1 class="mt-0">{{ program.title }}</h1>
+            <p>{{ program.synopsis }}</p>
+            <p>Catégorie : {{ program.category.name }}</p>
+            <p>Durée : {{ programDuration }}</p>
+            
 
-			{% else %}
-				Aucune saison trouvée.
-			{% endfor %}
+            <h2>Saisons</h2>
+            <ul>
+                {% for season in program.seasons %}
+                    <li><a href="{{ path('program_season_show', {slug: program.slug, seasonId: season.id}) }}">Saison{{ season.number }}</a></li>
+                {% endfor %}
+            </ul>
+            <h2>Acteurs</h2>
+            <ul>
+                {% for actor in program.actors %}
+                    <li><a href="{{ path('actor_show', {id: actor.id}) }}">{{ actor.firstname }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 
-			<a href="{{ path("program_show", {id: program.id}) }}">Voir la fiche</a>
-		</div>
-	</div>
-
-	<a href="{{ path('program_index') }}">
-		Retour à la liste des séries
-	</a>
+    <a href="{{ path('program_index') }}">
+        Retour à la liste des programmes
+    </a>
 {% endblock %}
