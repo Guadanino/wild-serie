@@ -4,20 +4,26 @@
 {% endblock %}
 
 {% block body %}
-	<h1>Toutes les catégories</h1>
-	{% for category in categories %}
+	<section class="body">
+		<h1>Toutes les catégories</h1>
+		{% for category in categories %}
 
-	<div class="card text-bg-light mb-3" style="max-width: 18rem;">
-		<div class="card-header"></div>
-			<div class="card-body">
-				<h2 class="card-title, mt-0">{{ loop.index }} / {{ category.name}}</h2>
-				<p class="card-text"><a href="{{ path("category_show", {categoryName: category.name}) }}">Voir la fiche</a></p>
+			<div class="card text-bg-light mb-3" style="max-width: 18rem;">
+				<div class="card-header"></div>
+				<div class="card-body">
+					<h2 class="card-title, mt-0">{{ loop.index }}
+						/
+						{{ category.name}}</h2>
+					<p class="card-text">
+						<a href="{{ path("category_show", {categoryName: category.name}) }}">Voir la fiche</a>
+					</p>
+				</div>
 			</div>
+		{% else %}
+			Aucune série trouvée.
+		{% endfor %}
+		<div>
+			<a href=" {{ path('app_index') }} ">Retour à l'accueil</a>
 		</div>
-	{% else %}
-		Aucune série trouvée.
-	{% endfor %}
-	<div>
-		<a href=" {{ path('app_index') }} ">Retour à l'accueil</a>
-	</div>
+	</section>
 {% endblock %}

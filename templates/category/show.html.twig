@@ -8,22 +8,24 @@
 {% endblock %}
 
 {% block body %}
-	{% for program in programs %}
+	<section class="body">
+		{% for program in programs %}
 
-		<div class="card text-bg-light mb-3" style="max-width: 18rem;">
-			<div class="card-header"><img class="align-self-start mr-3" src="{{program.poster}}" alt="{{program.title}} poster"></div>
-			<div class="card-body">
-				<h5 class="card-title, mt-0">{{ program.id }}
-					-
-					{{ program.title }}</h5>
-				<p class="card-text">{{program.synopsis}}</p>
-				<p class="card-text">Catégorie :{{program.category.name}}</p>
+			<div class="card text-bg-light mb-3" style="max-width: 18rem;">
+				<div class="card-header"><img class="align-self-start mr-3" src="{{program.poster}}" alt="{{program.title}} poster"></div>
+				<div class="card-body">
+					<h5 class="card-title, mt-0">{{ program.id }}
+						-
+						{{ program.title }}</h5>
+					<p class="card-text">{{program.synopsis}}</p>
+					<p class="card-text">Catégorie :{{program.category.name}}</p>
+				</div>
+
+				<a href="{{ path("program_show", {id: program.id}) }}">Voir la fiche</a>
 			</div>
-
-			<a href="{{ path("program_show", {id: program.id}) }}">Voir la fiche</a>
-		</div>
-	{% endfor %}
-	<a href="{{ path('program_index') }}">
-		Retour à la liste des séries
-	</a>
+		{% endfor %}
+		<a href="{{ path('program_index') }}">
+			Retour à la liste des séries
+		</a>
+	</section>
 {% endblock %}
