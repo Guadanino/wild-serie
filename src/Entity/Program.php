@@ -14,6 +14,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ProgramRepository::class)]
 #[UniqueEntity('title')]
+#[Vich\Uploadable]
 class Program
 {
     #[ORM\Id]

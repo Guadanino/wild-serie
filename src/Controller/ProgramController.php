@@ -14,9 +14,6 @@ use App\Service\ProgramDuration;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/program', name: 'program_')]
 class ProgramController extends AbstractController
@@ -42,28 +39,15 @@ class ProgramController extends AbstractController
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, MailerInterface $mailer, EntityManagerInterface $entityManager, SluggerInterface $slugger, ProgramRepository $programRepository) : Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ProgramRepository $programRepository) : Response
     {
         $program = new Program();
         $form = $this->createForm(ProgramType::class, $program);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $slug = $slugger->slug($program->getTitle());
-            $program->setSlug($slug);
             $entityManager->persist($program);
             $entityManager->flush();
-
-           // $programRepository->save($program, true); 
-
-            $email = (new Email())
-            ->from($this->getParameter('mailer_from'))
-            ->to('your_email@example.com')
-            ->subject('Une nouvelle série vient d\'être publiée !')
-            ->html($this->renderView('Program/newProgramEmail.html.twig', ['program' => $program]));
-             $mailer->send($email);
-
     
             $this->addFlash('success', 'The new program has been created');
 
@@ -76,7 +60,7 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('/show/{slug}', name: 'show')]
+    #[Route('/show/{id}', name: 'show')]
     public function show(Program $program, ProgramDuration $programDuration):Response
     {
         //$program = $programRepository->findOneBy(['id' => $id]);
@@ -92,7 +76,7 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}/season/{seasonId}', name: 'season_show')]
+    #[Route('/{id}/season/{seasonId}', name: 'season_show')]
     public function showSeason(Program $program, int $seasonId,  SeasonRepository $seasonRepository)
     {
             //$program = $programRepository->find($programId);
@@ -118,7 +102,7 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('program/{slug}/season/{seasonId}/episode/{episodeId}', name: 'episode_show')]
+    #[Route('program/{id}/season/{seasonId}/episode/{episodeId}', name: 'episode_show')]
     public function showEpisode(
     //int $programId,
     Program $program,
