@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProgramRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -33,6 +35,9 @@ class Program
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $poster = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $updatedAt = null;
 
     #[Vich\UploadableField(mapping: 'poster_file', fileNameProperty: 'poster')]
     private ?File $posterFile = null;
@@ -101,12 +106,6 @@ class Program
     {
         $this->poster = $poster;
 
-        return $this;
-    }
-
-    public function setPosterFile(File $image = null): Program
-    {
-        $this->posterFile = $image;
         return $this;
     }
 
@@ -206,6 +205,28 @@ class Program
         }
 
         return $this;
+    }
+
+    public function getUpdateAt(): ?int
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdateAt(int $updatedAt): static
+    {
+        $this->year = $updatedAt;
+
+        return $this;
+    }
+
+    public function setPosterFile(File $image = null): Program
+    {
+      $this->posterFile = $image;
+      if ($image) {
+        $this->updatedAt = new DateTime('now');
+      }
+  
+      return $this;
     }
 
 }
